@@ -19,27 +19,10 @@ class Job(Base):
     requirements = Column(Text, nullable=False)
     responsibilities = Column(Text, nullable=False)
     level = Column(SqlEnum(JobLevelEnum), nullable=False)
-    skills = relationship("Skill", secondary="job_skills", back_populates="jobs")
 
     def __repr__(self):
         return f"<Job(title={self.title}, level={self.level})>"
     
-    
-job_skills = Table('job_skills', Base.metadata,
-    Column('job_id', String, ForeignKey('jobs.id')),
-    Column('skill_id', String, ForeignKey('skills.id'))
-)
-
-class Skill(Base):
-    __tablename__ = 'skills'
-
-    id = Column(String, primary_key=True, index=True)
-    title = Column(String(100), unique=True, nullable=False)
-    jobs = relationship("Job", secondary=job_skills, back_populates="skills")
-
-    def __repr__(self):
-        return f"<Skill(title={self.title})>"
-
 Base.metadata.create_all(engine)
 
 
